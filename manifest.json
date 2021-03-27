@@ -1,0 +1,30 @@
+{
+    "name": "FB UID Saver",
+    "description": "Save FB UID in group for ahaplus broadcast messaging",
+    "version": "1.0",
+    "manifest_version": 3,
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_popup": "popup.html",
+        "default_icon": "/img/favicon.png"
+    },
+    "icons": {
+        "16": "/img/favicon.png",
+        "32": "/img/favicon.png",
+        "48": "/img/favicon.png",
+        "128": "/img/favicon.png"
+    },
+    "content_scripts": [{
+        "matches": ["*://www.facebook.com/*"],
+        "js": ["contentScript.js"]
+    }],
+    "host_permissions": [
+        "https://script.google.com/*"
+    ],
+    "web_accessible_resources": [{
+        "resources": ["/img/marker.svg"],
+        "matches": ["*://www.facebook.com/*"]
+    }]
+}
