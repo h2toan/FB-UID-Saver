@@ -6,6 +6,7 @@
     "background": {
         "service_worker": "background.js"
     },
+    "key": "fbsv",
     "action": {
         "default_popup": "popup.html",
         "default_icon": "/img/favicon.png"
@@ -24,7 +25,7 @@
         "https://script.google.com/*"
     ],
     "web_accessible_resources": [{
-        "resources": ["/img/marker.svg", "jquery-3.6.0.slim.min.js", "internal.js", "fb-uid-saver.css"],
+        "resources": ["/img/marker.png", "jquery-3.6.0.slim.min.js", "internal.js", "fb-uid-saver.css"],
         "matches": ["*://www.facebook.com/*"]
     }]
 }
