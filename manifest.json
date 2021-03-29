@@ -24,7 +24,7 @@
         "https://script.google.com/*"
     ],
     "web_accessible_resources": [{
-        "resources": ["/img/marker.svg"],
+        "resources": ["/img/marker.svg", "jquery-3.6.0.slim.min.js", "internal.js", "fb-uid-saver.css"],
         "matches": ["*://www.facebook.com/*"]
     }]
 }
