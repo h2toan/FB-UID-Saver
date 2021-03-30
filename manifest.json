@@ -21,11 +21,17 @@
         "matches": ["*://www.facebook.com/*"],
         "js": ["contentScript.js"]
     }],
+    "permissions": [
+        "storage"
+    ],
     "host_permissions": [
         "https://script.google.com/*"
     ],
     "web_accessible_resources": [{
-        "resources": ["/img/marker.png", "jquery-3.6.0.slim.min.js", "internal.js", "fb-uid-saver.css"],
+        "resources": ["/img/marker.png", "jquery-3.6.0.slim.min.js", "internal.js", "fb-uid-saver.css","index-min.js"],
         "matches": ["*://www.facebook.com/*"]
-    }]
+    }],
+    "externally_connectable": {
+        "matches": ["*://www.facebook.com/*"]
+    }
 }

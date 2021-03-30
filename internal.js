@@ -1,5 +1,6 @@
 import $ from './jquery-3.6.0.slim.min.js';
-
+import idb from './index-min.js';
+console.log(idb);
 $(() => {
     const DOM_OBSERVER = new MutationObserver((mutationList) => {
         mutationList.forEach(e => {
@@ -25,10 +26,17 @@ function insertSaveButton() {
     $('img.fbsaver-save-button').map((i, e) => e.onclick = save);
 }
 
-function save() {
+async function save() {
     switch ($(this).parent()[0].tagName) {
         case "SPAN":
-            console.log($(this).parents('div.j83agx80.cbu4d94t.ew0dbk1b.irj2b8pg').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.oo9gr5id.gpro0wi8.lrazzd5p')[0].href);
+            const PROFILE_HREF = $(this).parents('div.j83agx80.cbu4d94t.ew0dbk1b.irj2b8pg').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.oo9gr5id.gpro0wi8.lrazzd5p')[0].href;
+            const PROFILE_UID = PROFILE_HREF.substring(PROFILE_HREF.indexOf('/user/') + 6, PROFILE_HREF.indexOf('/?'));
+            const PROFILE_NAME = $(this).parents('div.j83agx80.cbu4d94t.ew0dbk1b.irj2b8pg').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.oo9gr5id.gpro0wi8.lrazzd5p')[0].innerText;
+            const PAY_LOAD = {
+                uid: PROFILE_UID,
+                name: PROFILE_NAME
+            };
+            chrome.runtime.sendMessage('cckalpbchfcoaohpfabnnojjmjbfaflh', PAY_LOAD);
             break;
 
         case "UL":
