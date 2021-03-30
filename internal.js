@@ -1,6 +1,5 @@
 import $ from './jquery-3.6.0.slim.min.js';
 import idb from './index-min.js';
-console.log(idb);
 $(() => {
     const DOM_OBSERVER = new MutationObserver((mutationList) => {
         mutationList.forEach(e => {
@@ -26,21 +25,40 @@ function insertSaveButton() {
     $('img.fbsaver-save-button').map((i, e) => e.onclick = save);
 }
 
-async function save() {
+function save() {
     switch ($(this).parent()[0].tagName) {
         case "SPAN":
-            const PROFILE_HREF = $(this).parents('div.j83agx80.cbu4d94t.ew0dbk1b.irj2b8pg').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.oo9gr5id.gpro0wi8.lrazzd5p')[0].href;
-            const PROFILE_UID = PROFILE_HREF.substring(PROFILE_HREF.indexOf('/user/') + 6, PROFILE_HREF.indexOf('/?'));
-            const PROFILE_NAME = $(this).parents('div.j83agx80.cbu4d94t.ew0dbk1b.irj2b8pg').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.oo9gr5id.gpro0wi8.lrazzd5p')[0].innerText;
-            const PAY_LOAD = {
-                uid: PROFILE_UID,
-                name: PROFILE_NAME
-            };
-            chrome.runtime.sendMessage('cckalpbchfcoaohpfabnnojjmjbfaflh', PAY_LOAD);
+            writeToDatabase(getDataFromProfileHref($(this).parents('div.j83agx80.cbu4d94t.ew0dbk1b.irj2b8pg').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.oo9gr5id.gpro0wi8.lrazzd5p')[0].href, $(this).parents('div.j83agx80.cbu4d94t.ew0dbk1b.irj2b8pg').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.oo9gr5id.gpro0wi8.lrazzd5p')[0].innerText));
             break;
 
         case "UL":
-            console.log($(this).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8')[0].href);
+            writeToDatabase(getDataFromProfileHref($(this).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8')[0].href, $(this).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8')[0].innerText));
             break;
+    }
+}
+
+async function writeToDatabase(PAY_LOAD) {
+    const DATA_BASE = await idb.openDB('FB-UID-Saver', 1, {
+        upgrade(db) {
+            if (!db.objectStoreNames.contains('Data List')) {
+                const SHEET = db.createObjectStore('Data List', {
+                    keyPath: 'uid'
+                });
+                SHEET.createIndex('name', 'name', {
+                    unique: false
+                });
+            }
+        }
+    });
+
+    const TRANSACTION = DATA_BASE.transaction('Data List', 'readwrite');
+    await TRANSACTION.store.put(PAY_LOAD)
+}
+
+function getDataFromProfileHref(PROFILE_HREF, PROFILE_NAME) {
+    const PROFILE_UID = PROFILE_HREF.substring(PROFILE_HREF.indexOf('/user/') + 6, PROFILE_HREF.indexOf('/?'));
+    return {
+        uid: PROFILE_UID,
+        name: PROFILE_NAME
     }
 }
