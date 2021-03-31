@@ -36,24 +36,6 @@ function save() {
             break;
     }
 }
-
-async function writeToDatabase(PAY_LOAD) {
-    const DATA_BASE = await idb.openDB('FB-UID-Saver', 1, {
-        upgrade(db) {
-            if (!db.objectStoreNames.contains('People Who Interested In Group Feed')) {
-                const SHEET = db.createObjectStore('People Who Interested In Group Feed', {
-                    keyPath: 'uid'
-                });
-                SHEET.createIndex('timeTaken', 'timeTaken', {
-                    unique: false
-                });
-            };
-        }
-    });
-    const TRANSACTION = DATA_BASE.transaction('People Who Interested In Group Feed', 'readwrite');
-    await TRANSACTION.store.put(PAY_LOAD);
-}
-
 function getDataFromProfileHref(element) {
     const PROFILE_HREF = element.href;
     const PROFILE_NAME = element.innerText;
@@ -64,3 +46,21 @@ function getDataFromProfileHref(element) {
         timeTaken: new Date()
     };
 }
+
+async function writeToDatabase(databaseName, objectStoreName, data) {
+    const DATA_BASE = await idb.openDB(databaseName, undefined);
+    const TRANSACTION = DATA_BASE.transaction(objectStoreName, 'readwrite');
+    await TRANSACTION.store.put(data);
+}
+
+async function initDatabase(databaseName, objectStoreName, version, objectStoreOption) {
+    return await idb.openDB(databaseName, version, {
+        upgrade(db) {
+            if (!db.objectStoreNames.contains(objectStoreName)) {
+                db.createObjectStore(objectStoreName, objectStoreOption);
+            }
+        }
+    })
+}
+
+initDatabase('')
