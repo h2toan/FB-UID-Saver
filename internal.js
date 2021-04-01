@@ -1,5 +1,4 @@
 import $ from './jquery-3.6.0.slim.min.js';
-import idb from './index-min.js';
 $(() => {
     const DOM_OBSERVER = new MutationObserver((mutationList) => {
         mutationList.forEach(e => {
@@ -28,22 +27,24 @@ function insertSaveButton() {
 function save() {
     switch ($(this).parent()[0].tagName) {
         case "SPAN":
-            chrome.runtime.sendMessage('cckalpbchfcoaohpfabnnojjmjbfaflh', getDataFromProfileHref($(this).parents('div.j83agx80.cbu4d94t.ew0dbk1b.irj2b8pg').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.oo9gr5id.gpro0wi8.lrazzd5p')[0]));
+            chrome.runtime.sendMessage('cckalpbchfcoaohpfabnnojjmjbfaflh', getDataFromProfileHref(this, true));
             break;
 
         case "UL":
-            chrome.runtime.sendMessage('cckalpbchfcoaohpfabnnojjmjbfaflh', getDataFromProfileHref($(this).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8')[0]));
+            chrome.runtime.sendMessage('cckalpbchfcoaohpfabnnojjmjbfaflh', getDataFromProfileHref(this, false));
             break;
     }
 }
 
-function getDataFromProfileHref(element) {
-    const PROFILE_HREF = element.href;
-    const PROFILE_NAME = element.innerText;
+function getDataFromProfileHref(element, isPost) {
+    const PROFILE_HREF = isPost ? $(element).parents('div.j83agx80.cbu4d94t.ew0dbk1b.irj2b8pg').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.oo9gr5id.gpro0wi8.lrazzd5p')[0].href : $(this).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8')[0].href;
+    const PROFILE_NAME = isPost ? $(element).parents('div.j83agx80.cbu4d94t.ew0dbk1b.irj2b8pg').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.oo9gr5id.gpro0wi8.lrazzd5p')[0].innerText : $(this).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8')[0].innerText;
     const PROFILE_UID = PROFILE_HREF.substring(PROFILE_HREF.indexOf('/user/') + 6, PROFILE_HREF.indexOf('/?'));
+    const POST_CONTENT = $(element).parent().parent().parent().parent().parent().parent().parent().parent().children()[2].innerText;
     return {
         uid: PROFILE_UID,
         name: PROFILE_NAME,
-        timeTaken: new Date()
+        timeTaken: new Date(),
+        postContent: POST_CONTENT
     };
 }
