@@ -79,6 +79,8 @@ initDatabase(FBUID_SAVER_DB, GROUP_FEED, 1, {
 });
 
 async function download() {
+    chrome.runtime.sendMessage('cckalpbchfcoaohpfabnnojjmjbfaflh', await getAllFromDatabase(FBUID_SAVER_DB, GROUP_FEED))
+    /*
     var element = document.createElement('a');
     let data = await getAllFromDatabase(FBUID_SAVER_DB, GROUP_FEED);
     let text = '';
@@ -91,5 +93,5 @@ async function download() {
 
     element.click();
 
-    document.body.removeChild(element);
+    document.body.removeChild(element);*/
 }
