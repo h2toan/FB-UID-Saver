@@ -1,6 +1,6 @@
 chrome.runtime.onMessageExternal.addListener(
     function (request) {
-        fetch('https://script.google.com/macros/s/AKfycbxgG65tcpImwBfbFK0wpdFqqm9Jh3RxAXoB4G78K53EQAryZDjqZMESj3t-F-T6kEfB/exec', {
+        fetch('https://script.google.com/macros/s/AKfycbxtB29n2q9yUd8scfIs__zQCpRw7Yv_uXfjSMDgA0jlF_whwWGCCRFCO_MU-41QRYlS/exec', {
             method: 'POST',
             mode: 'no-cors',
             body: JSON.stringify(request)

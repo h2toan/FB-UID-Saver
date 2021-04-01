@@ -1,11 +1,11 @@
-const TEST_PAYLOAD = JSON.parse('{"uid":"100047590807335","name":"Lê Thanh Ngân","timeTaken":"2021-04-01T09:02:07.770Z"}');
+const TEST_PAYLOAD = JSON.parse('{"uid":"100010126620062","name":"Đỗ Thị Nguyên Phương","timeTaken":"2021-04-01T14:18:02.634Z","postContent":"E cần tìm đầm này ạ,ai có báo em nha","group":"♥️ HỘI THANH LÝ VÁY MAXI, VÁY VOAN HOA, VINTAGE"}');
 
 function writeToDatabase(PAYLOAD = TEST_PAYLOAD) {
-    const DATABASE = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Sheet2');
+    const DATABASE = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Data List');
     const LAST_ROW = DATABASE.getLastRow();
     const MAX_ROW = DATABASE.getMaxRows();
     if (LAST_ROW == MAX_ROW) {
         DATABASE.insertRowAfter(LAST_ROW);
     };
-    DATABASE.getRange('A1').setValue(JSON.stringify(PAYLOAD));
+    DATABASE.getRange(`A${LAST_ROW+1}:E${LAST_ROW+1}`).setValues([[PAYLOAD.uid,PAYLOAD.name,PAYLOAD.timeTaken,PAYLOAD.group,PAYLOAD.postContent]]);
 }
