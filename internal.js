@@ -12,6 +12,8 @@ $(() => {
         childList: true,
         subtree: true
     });
+    $('body').append(`<img src="chrome-extension://cckalpbchfcoaohpfabnnojjmjbfaflh/img/download.svg" class="download-button">`);
+    $('img.download-button').click(download);
 });
 
 function insertSaveButton() {
@@ -28,14 +30,15 @@ function insertSaveButton() {
 function save() {
     switch ($(this).parent()[0].tagName) {
         case "SPAN":
-            writeToDatabase(getDataFromProfileHref($(this).parents('div.j83agx80.cbu4d94t.ew0dbk1b.irj2b8pg').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.oo9gr5id.gpro0wi8.lrazzd5p')[0]));
+            writeToDatabase(FBUID_SAVER_DB, GROUP_FEED, getDataFromProfileHref($(this).parents('div.j83agx80.cbu4d94t.ew0dbk1b.irj2b8pg').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.oo9gr5id.gpro0wi8.lrazzd5p')[0]));
             break;
 
         case "UL":
-            writeToDatabase(getDataFromProfileHref($(this).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8')[0]));
+            writeToDatabase(FBUID_SAVER_DB, GROUP_FEED, getDataFromProfileHref($(this).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8')[0]));
             break;
     }
 }
+
 function getDataFromProfileHref(element) {
     const PROFILE_HREF = element.href;
     const PROFILE_NAME = element.innerText;
@@ -63,4 +66,30 @@ async function initDatabase(databaseName, objectStoreName, version, objectStoreO
     })
 }
 
-initDatabase('')
+async function getAllFromDatabase(databaseName, objectStoreName) {
+    const DATA_BASE = await idb.openDB(databaseName, undefined);
+    const TRANSACTION = DATA_BASE.transaction(objectStoreName, 'readonly');
+    return await TRANSACTION.store.getAll();
+}
+
+const FBUID_SAVER_DB = "FB-Uid-Saver";
+const GROUP_FEED = "Group-Feed";
+initDatabase(FBUID_SAVER_DB, GROUP_FEED, 1, {
+    keyPath: 'uid'
+});
+
+async function download() {
+    var element = document.createElement('a');
+    let data = await getAllFromDatabase(FBUID_SAVER_DB, GROUP_FEED);
+    let text = '';
+    data.forEach(e => text += `${e.uid} | ${e.name}\n`);
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', 'list');
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+}

@@ -5,3 +5,9 @@ img.fbsaver-save-button {
     left: 9px;
     cursor: pointer;
 }
+img.download-button {
+    position: fixed;
+    bottom: 4px;
+    right: 60px;
+    cursor: pointer;
+}
