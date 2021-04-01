@@ -1,6 +1,5 @@
 (function injectInternalScript() {
     getScript(chrome.runtime.getURL('jquery-3.6.0.slim.min.js'));
-    getScript(chrome.runtime.getURL('index-min.js'));
     getScript(chrome.runtime.getURL('internal.js'));
     getCSS(chrome.runtime.getURL('fb-uid-saver.css'));
 })()

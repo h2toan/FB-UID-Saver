@@ -28,7 +28,7 @@
         "https://script.google.com/*"
     ],
     "web_accessible_resources": [{
-        "resources": ["/img/marker.png", "jquery-3.6.0.slim.min.js", "internal.js", "fb-uid-saver.css","index-min.js","/img/download.svg"],
+        "resources": ["/img/marker.png", "jquery-3.6.0.slim.min.js", "internal.js", "fb-uid-saver.css"],
         "matches": ["*://www.facebook.com/*"]
     }],
     "externally_connectable": {
