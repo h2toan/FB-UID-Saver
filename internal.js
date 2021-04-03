@@ -3,7 +3,9 @@ $(() => {
     const DOM_OBSERVER = new MutationObserver((mutationList) => {
         mutationList.forEach(e => {
             if (e.type == 'childList') {
-                insertSaveButton();
+                if (location.pathname.match(/^\/groups\/\d+$/)) {
+                    insertSaveButton();
+                }
             };
         });
     });
@@ -48,22 +50,4 @@ function prepareData(element, isPost) {
         postContent: POST_CONTENT ? POST_CONTENT.innerText : '',
         group: $('span.d2edcug0.hpfvmrgz.qv66sw1b.c1et5uql.lr9zc1uh.a8c37x1j.keod5gw0.nxhoafnm.aigsh9s9.embtmqzv.fe6kdd0r.mau55g9w.c8b282yb.hrzyx87i.m6dqt4wy.h7mekvxk.hnhda86s.oo9gr5id.hzawbc8m')[0].innerText
     };
-}
-
-async function getPostId(element) {
-    return console.log(await new Promise((resolve, reject) => {
-        function bodyFocus(callback) {
-            setTimeout(() => {
-                document.querySelector('body').focus();
-                callback();
-            }, 1)
-        }
-        function trickFocus(element) {
-            element.focus();
-            resolve(element.href);
-        }
-        bodyFocus(() => {
-            setTimeout(trickFocus(element), 1);
-        })
-    }));
 }
