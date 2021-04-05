@@ -1,9 +1,11 @@
 chrome.runtime.onMessageExternal.addListener(
-    function (request) {
-        fetch('https://script.google.com/macros/s/AKfycbxtB29n2q9yUd8scfIs__zQCpRw7Yv_uXfjSMDgA0jlF_whwWGCCRFCO_MU-41QRYlS/exec', {
+    async function (request, sender, sendResponse) {
+        const res = await fetch('https://script.google.com/macros/s/AKfycbwZqapZno2sHVCRVjrh0O-ZxB9K94ecIQrEPDBWZsnp6-0iEPmHNxETh6wbKPM-uQLT/exec', {
             method: 'POST',
             mode: 'no-cors',
             body: JSON.stringify(request)
         });
+        console.log(res);
+        sendResponse('Success');
     }
 );

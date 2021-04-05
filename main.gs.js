@@ -7,5 +7,7 @@ function writeToDatabase(PAYLOAD = TEST_PAYLOAD) {
     if (LAST_ROW == MAX_ROW) {
         DATABASE.insertRowAfter(LAST_ROW);
     };
-    DATABASE.getRange(`A${LAST_ROW+1}:E${LAST_ROW+1}`).setValues([[PAYLOAD.uid,PAYLOAD.name,PAYLOAD.timeTaken,PAYLOAD.group,PAYLOAD.postContent]]);
+    DATABASE.getRange(`A${LAST_ROW+1}:I${LAST_ROW+1}`).setValues([
+        [PAYLOAD.uid, PAYLOAD.name, PAYLOAD.timeTaken, PAYLOAD.group, PAYLOAD.postContent, PAYLOAD.postId, PAYLOAD.commentId, PAYLOAD.replyCommentId, `=CONCATENATE(A${LAST_ROW+1}," | ",B${LAST_ROW+1})`]
+    ]);
 }

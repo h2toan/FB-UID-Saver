@@ -5,9 +5,11 @@ img.fbsaver-save-button {
     left: 9px;
     cursor: pointer;
 }
-img.download-button {
+
+img.spyware-button {
     position: fixed;
-    bottom: 4px;
-    right: 60px;
+    bottom: 15px;
+    left: 50px;
+    width: 50px;
     cursor: pointer;
 }
