@@ -40,11 +40,19 @@ function insertSaveButton(anchorSelector, typeOfAnchor) {
 }
 
 function handleSaveClick() {
-    this.className += ' clicked';
-    chrome.runtime.sendMessage('cckalpbchfcoaohpfabnnojjmjbfaflh', getPayLoad(), saveLoop);
+    try {
+        this.className += ' clicked';
+        this.src = "chrome-extension://cckalpbchfcoaohpfabnnojjmjbfaflh/img/loading.svg";
+        chrome.runtime.sendMessage('cckalpbchfcoaohpfabnnojjmjbfaflh', getPayLoad(this), () => {
+            this.src = "chrome-extension://cckalpbchfcoaohpfabnnojjmjbfaflh/img/check.png";
+        });
+    } catch (error) {
+        this.src = "chrome-extension://cckalpbchfcoaohpfabnnojjmjbfaflh/img/warning.png";
+    }
+
 }
 
-function getPayLoad(this) {
+function getPayLoad(target) {
     let payLoad = {
         uid: '',
         name: '',
@@ -52,39 +60,41 @@ function getPayLoad(this) {
         postContent: '',
         group: document.title.match(/(\(\d+\)\s)*(.+)(\s\| Facebook)/)[2]
     };
-    if (this.classList[1] === 'feed-post') {
-        payLoad.uid = $(this).parents('div.j83agx80.cbu4d94t.ew0dbk1b.irj2b8pg').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.oo9gr5id.gpro0wi8.lrazzd5p')[0].href.match(/(\/user\/)(\d+)/)[2];
-        payLoad.name = $(this).parents('div.j83agx80.cbu4d94t.ew0dbk1b.irj2b8pg').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.oo9gr5id.gpro0wi8.lrazzd5p')[0].innerText;
-        payLoad.postContent = $(this).parent().parent().parent().parent().parent().parent().parent().parent().children()[2].innerText;
-        $(this).parent().find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8.b1v8xokw')[0].focus();
-        payLoad.postId = $(this).parent().find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8.b1v8xokw')[0].href.match(/(\/permalink\/)(\d+)/)[2];
-        return payLoad;
-    };
-    if (this.classList[1] === 'feed-comment') {
-        payLoad.uid = $(this).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8')[0].href.match(/(\/user\/)(\d+)/)[2];
-        payLoad.name = $(this).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8')[0].innerText;
-        payLoad.postContent = $(this).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('div.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.c1et5uql')[0] ? $(this).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('div.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.c1et5uql')[0].innerText : '';
-        payLoad.postId = $(this).parent().find('a')[0].href.match(/(\/permalink\/)(\d+)/)[2];
-        payLoad.commentId = $(this).parent().find('a')[0].href.match(/(\?comment_id=)(\d+)/)[2];
-        payLoad.replyCommentId = $(this).parent().find('a')[0].href.match(/(reply_comment_id=)(\d+)/) ? $(this).parent().find('a')[0].href.match(/(reply_comment_id=)(\d+)/)[2] : '';
-        return payLoad;
-    };
-    if (this.classList[1] === 'search-post') {
-        payLoad.uid = $(this).parent().children(':first-child')[0].href.match(/(\/user\/)(\d+)/)[2];
-        payLoad.name = $(this).parent().children(':first-child')[0].innerText;
-        payLoad.postContent = $(this).parents('div.rq0escxv.l9j0dhe7.du4w35lb.hybvsw6c.io0zqebd.m5lcvass.fbipl8qg.nwvqtn77.k4urcfbm.ni8dbmo4.stjgntxs.sbcfpzgs').find('span.a8c37x1j.ni8dbmo4.stjgntxs.l9j0dhe7')[1].childNodes[1].data;
-        payLoad.postId = $(this).parents('div.rq0escxv.l9j0dhe7.du4w35lb.hybvsw6c.io0zqebd.m5lcvass.fbipl8qg.nwvqtn77.k4urcfbm.ni8dbmo4.stjgntxs.sbcfpzgs').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.a8c37x1j.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.p8dawk7l')[0].href.match(/(\/permalink\/)(\d+)/)[2];
-        return payLoad;
-    };
-    if (this.classList[1] === 'search-comment') {
-        payLoad.uid = $(this).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8')[0].href.match(/(\/user\/)(\d+)/)[2];
-        payLoad.name = $(this).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8')[0].innerText;
-        payLoad.postContent = $(this).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('div.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.c1et5uql')[0] ? $(this).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('div.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.c1et5uql')[0].innerText : '';
-        payLoad.postId = $(this).parent().find('a')[0].href.match(/(\/permalink\/)(\d+)/)[2];
-        payLoad.commentId = $(this).parent().find('a')[0].href.match(/(\?comment_id=)(\d+)/)[2];
-        payLoad.replyCommentId = $(this).parent().find('a')[0].href.match(/(reply_comment_id=)(\d+)/) ? $(this).parent().find('a')[0].href.match(/(reply_comment_id=)(\d+)/)[2] : '';
-        return payLoad;
-    };
+    switch (target.classList[1]) {
+        case 'feed-post':
+            payLoad.uid = $(target).parents('div.j83agx80.cbu4d94t.ew0dbk1b.irj2b8pg').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.oo9gr5id.gpro0wi8.lrazzd5p')[0].href.match(/(\/user\/)(\d+)/)[2];
+            payLoad.name = $(target).parents('div.j83agx80.cbu4d94t.ew0dbk1b.irj2b8pg').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.oo9gr5id.gpro0wi8.lrazzd5p')[0].innerText;
+            payLoad.postContent = $(target).parent().parent().parent().parent().parent().parent().parent().parent().children()[2].innerText;
+            $(target).parent().find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8.b1v8xokw')[0].focus();
+            payLoad.postId = $(target).parent().find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8.b1v8xokw')[0].href.match(/(\/permalink\/)(\d+)/)[2];
+            break;
+        case 'feed-comment':
+            payLoad.uid = $(target).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8')[0].href.match(/(\/user\/)(\d+)/)[2];
+            payLoad.name = $(target).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8')[0].innerText;
+            payLoad.postContent = $(target).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('div.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.c1et5uql')[0] ? $(target).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('div.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.c1et5uql')[0].innerText :
+                '';
+            payLoad.postId = $(target).parent().find('a')[0].href.match(/(\/permalink\/)(\d+)/)[2];
+            payLoad.commentId = $(target).parent().find('a')[0].href.match(/(\?comment_id=)(\d+)/)[2];
+            payLoad.replyCommentId = $(target).parent().find('a')[0].href.match(/(reply_comment_id=)(\d+)/) ? $(target).parent().find('a')[0].href.match(/(reply_comment_id=)(\d+)/)[2] : '';
+            break;
+        case 'search-post':
+            payLoad.uid = $(target).parent().children(':first-child')[0].href.match(/(\/user\/)(\d+)/)[2];
+            payLoad.name = $(target).parent().children(':first-child')[0].innerText;
+            payLoad.postContent = $(target).parents('div.rq0escxv.l9j0dhe7.du4w35lb.hybvsw6c.io0zqebd.m5lcvass.fbipl8qg.nwvqtn77.k4urcfbm.ni8dbmo4.stjgntxs.sbcfpzgs').find('span.a8c37x1j.ni8dbmo4.stjgntxs.l9j0dhe7')[1].childNodes[1].data;
+            payLoad.postId = $(target).parents('div.rq0escxv.l9j0dhe7.du4w35lb.hybvsw6c.io0zqebd.m5lcvass.fbipl8qg.nwvqtn77.k4urcfbm.ni8dbmo4.stjgntxs.sbcfpzgs').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.a8c37x1j.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.p8dawk7l')[0].href.match(/(\/permalink\/)(\d+)/)[2];
+            break;
+        case 'search-comment':
+            payLoad.uid = $(target).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8')[0].href.match(/(\/user\/)(\d+)/)[2];
+            payLoad.name = $(target).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8')[0].innerText;
+            payLoad.postContent = $(target).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('div.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.c1et5uql')[0] ? $(target).parents('div.g3eujd1d.ni8dbmo4.stjgntxs.hv4rvrfc').find('div.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.c1et5uql')[0].innerText : '';
+            payLoad.postId = $(target).parent().find('a')[0].href.match(/(\/permalink\/)(\d+)/)[2];
+            payLoad.commentId = $(target).parent().find('a')[0].href.match(/(\?comment_id=)(\d+)/)[2];
+            payLoad.replyCommentId = $(target).parent().find('a')[0].href.match(/(reply_comment_id=)(\d+)/) ? $(target).parent().find('a')[0].href.match(/(reply_comment_id=)(\d+)/)[2] : '';
+            break;
+        default:
+            break;
+    }
+    return payLoad;
 }
 
 function saveLoop() {
