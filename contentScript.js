@@ -1,3 +1,4 @@
+let isLoopRunning = false;
 $(() => {
     const DOM_OBSERVER = new MutationObserver((mutationList) => {
         mutationList.forEach(e => {
@@ -20,11 +21,16 @@ $(() => {
     let spywareButton = document.createElement('img');
     spywareButton.src = chrome.runtime.getURL('img/spyware.png');
     spywareButton.className = `spyware-button`;
-    spywareButton.onclick = () => {
-        $('img.search-post')[0].className += ' clicked';
-        $('img.search-post')[1].className += ' clicked';
-        $('img.search-post')[2].className += ' clicked';
-        $('img.search-post')[3].click();
+    spywareButton.onclick = async () => {
+        if (!isLoopRunning) {
+            isLoopRunning = true;
+            spywareButton.src = chrome.runtime.getURL('img/spyware.gif');
+            await handleSaveClick($('img.search-post').not($('img.search-post.clicked'))[0]);
+            saveLoop();
+        } else {
+            spywareButton.src = chrome.runtime.getURL('img/spyware.png');
+            isLoopRunning = false;
+        }
     };
     $('body').append(spywareButton);
 });
@@ -38,18 +44,24 @@ function insertSaveButton(anchorSelector, typeOfAnchor) {
     $('img.fbsaver-save-button').map((i, e) => e.onclick = handleSaveClick);
 }
 
-async function handleSaveClick() {
+async function handleSaveClick(e) {
+    if (!isLoopRunning) {
+        return false;
+    };
+    const TARGET = e.currentTarget ?? e;
     try {
-        this.className += ' clicked';
-        this.src = chrome.runtime.getURL('img/loading.svg');
+        TARGET.className += ' clicked';
+        TARGET.src = chrome.runtime.getURL('img/loading.svg');
         await fetch('https://script.google.com/macros/s/AKfycbwZqapZno2sHVCRVjrh0O-ZxB9K94ecIQrEPDBWZsnp6-0iEPmHNxETh6wbKPM-uQLT/exec', {
             method: 'POST',
-            body: JSON.stringify(getPayLoad(this))
+            body: JSON.stringify(getPayLoad(TARGET))
         });
-        this.src = chrome.runtime.getURL('img/check.png');
+        TARGET.src = chrome.runtime.getURL('img/check.png');
+        return true;
     } catch (error) {
         console.log(error);
-        this.src = chrome.runtime.getURL('img/warning.png');
+        TARGET.src = chrome.runtime.getURL('img/warning.png');
+        return true;
     }
 }
 
@@ -98,14 +110,15 @@ function getPayLoad(target) {
     return payLoad;
 }
 
-function saveLoop() {
-    return
+async function saveLoop() {
     if ($('img.search-post').not($('img.search-post.clicked'))[0] == undefined && $('span.d2edcug0.hpfvmrgz.qv66sw1b.c1et5uql.lr9zc1uh.a8c37x1j.keod5gw0.nxhoafnm.aigsh9s9.d3f4x2em.fe6kdd0r.mau55g9w.c8b282yb.iv3no6db.jq4qci2q.a3bd9o3v.knj5qynh.m9osqain.oqcyycmt')[0] !== undefined) {
-        console.log('Done');
-        return;
+        return console.log('Done');
     }
+
     if ($('img.search-post').not($('img.search-post.clicked'))[0] == undefined) {
         scroll(0, document.body.scrollHeight);
         setTimeout(saveLoop, 5000);
-    } else $('img.search-post').not($('img.search-post.clicked'))[0].click();
+    } else {
+        await handleSaveClick($('img.search-post').not($('img.search-post.clicked'))[0]) && saveLoop();
+    };
 }
