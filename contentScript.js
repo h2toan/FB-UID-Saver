@@ -1,4 +1,19 @@
-let isLoopRunning = false;
+let loopState = 'idle';
+let spywareButton = document.createElement('img');
+spywareButton.src = chrome.runtime.getURL('img/spyware.png');
+spywareButton.className = `spyware-button`;
+spywareButton.onclick = async () => {
+    if (loopState == 'pause' || loopState == 'idle') {
+        loopState = 'running';
+        spywareButton.src = chrome.runtime.getURL('img/spyware.gif');
+        await handleSaveClick($('img.search-post').not($('img.search-post.clicked'))[0]);
+        saveLoop();
+    } else {
+        spywareButton.src = chrome.runtime.getURL('img/spyware.png');
+        loopState = 'pause';
+    }
+};
+$('body').append(spywareButton);
 $(() => {
     const DOM_OBSERVER = new MutationObserver((mutationList) => {
         mutationList.forEach(e => {
@@ -18,21 +33,6 @@ $(() => {
         childList: true,
         subtree: true
     });
-    let spywareButton = document.createElement('img');
-    spywareButton.src = chrome.runtime.getURL('img/spyware.png');
-    spywareButton.className = `spyware-button`;
-    spywareButton.onclick = async () => {
-        if (!isLoopRunning) {
-            isLoopRunning = true;
-            spywareButton.src = chrome.runtime.getURL('img/spyware.gif');
-            await handleSaveClick($('img.search-post').not($('img.search-post.clicked'))[0]);
-            saveLoop();
-        } else {
-            spywareButton.src = chrome.runtime.getURL('img/spyware.png');
-            isLoopRunning = false;
-        }
-    };
-    $('body').append(spywareButton);
 });
 
 function insertSaveButton(anchorSelector, typeOfAnchor) {
@@ -45,10 +45,10 @@ function insertSaveButton(anchorSelector, typeOfAnchor) {
 }
 
 async function handleSaveClick(e) {
-    if (!isLoopRunning) {
+    if (loopState == 'pause') {
         return false;
     };
-    const TARGET = e.currentTarget ?? e;
+    const TARGET = e.currentTarget || e;
     try {
         TARGET.className += ' clicked';
         TARGET.src = chrome.runtime.getURL('img/loading.svg');
@@ -112,6 +112,7 @@ function getPayLoad(target) {
 
 async function saveLoop() {
     if ($('img.search-post').not($('img.search-post.clicked'))[0] == undefined && $('span.d2edcug0.hpfvmrgz.qv66sw1b.c1et5uql.lr9zc1uh.a8c37x1j.keod5gw0.nxhoafnm.aigsh9s9.d3f4x2em.fe6kdd0r.mau55g9w.c8b282yb.iv3no6db.jq4qci2q.a3bd9o3v.knj5qynh.m9osqain.oqcyycmt')[0] !== undefined) {
+        spywareButton.src = chrome.runtime.getURL('img/spyware.png');
         return console.log('Done');
     }
 
